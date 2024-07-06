@@ -4,25 +4,38 @@
     List<Category> ordered_categories = Model.OrderBy(category => category.DisplayOrder).ToList();
 }
 
-<h1>Category list</h1>
-<table class="table table-bordered table-striped">
-    <tr>
-        <th>
-            Category Name
-        </th>
-        <th>
-            Display Order
-        </th>
-    </tr>
-    @foreach (Category category in ordered_categories)
-    {
+<div class="container">
+    <div class="row pt-4 pb-3">
+        <div class="col-6">
+            <h2 class="text-black">Category List</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="Category" asp-action="CreateCategory" class="btn btn-dark"><i class="bi bi-plus-circle"></i> Create New Category</a>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-striped">
         <tr>
-            <td>
-                @category.Name
-            </td>
-            <td>
-                @category.DisplayOrder
-            </td>
+            <th class="text-center">Category Name</th>
+            <th class="text-center">Display Order</th>
+            <th class="text-center">Edit</th>
         </tr>
-    }
-</table>
+        @foreach (Category category in ordered_categories)
+        {
+            <tr class="text-center">
+                <td>
+                    @category.Name
+                </td>
+                <td>
+                    @category.DisplayOrder
+                </td>
+                <td>
+                    <div class="w-75 btn-group" role="group">
+                        <a asp-controller="Category" asp-action="Edit" asp-route-Id ="@category.Id" class="btn btn-outline-dark text-center"><i class="bi bi-pencil"></i> Edit</a>
+                        <a asp-controller="Category" asp-action="Delete" asp-route-Id ="@category.Id" class="btn btn-outline-danger"><i class="bi bi-trash3-fill"></i> Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
