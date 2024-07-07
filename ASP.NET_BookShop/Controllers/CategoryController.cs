@@ -28,6 +28,7 @@ namespace ASP.NET_BookShop.Controllers
 
             shop_context.Categories.Add(category);
             shop_context.SaveChanges();
+            TempData["success"] = "Category created successfully";
             return RedirectToAction("Index", "Category");
         }
 
@@ -42,6 +43,7 @@ namespace ASP.NET_BookShop.Controllers
             {
                 return NotFound();
             }
+            
             return View(category_from_database);
         }
         [HttpPost]
@@ -52,6 +54,7 @@ namespace ASP.NET_BookShop.Controllers
 
             shop_context.Update(category);
             shop_context.SaveChanges();
+            TempData["success"] = "Category updated successfully";
             return RedirectToAction("Index", "Category");
         }
         public IActionResult Delete(int? id)
@@ -61,7 +64,7 @@ namespace ASP.NET_BookShop.Controllers
             
             shop_context.Remove(category_from_database);
             shop_context.SaveChanges();
-
+            TempData["success"] = "Category deleted successfully";
             return RedirectToAction("Index", "Category");
         }
     }
