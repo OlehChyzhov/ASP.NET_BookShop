@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace ASP.NET_BookShop.Models
+namespace BookShop.Models
 {
     [Table("category")]
     public class Category

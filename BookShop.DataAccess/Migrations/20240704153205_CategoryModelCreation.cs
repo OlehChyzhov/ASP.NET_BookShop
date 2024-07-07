@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace ASP.NET_BookShop.Migrations
+namespace BookShop.DataAcesss.Migrations
 {
     /// <inheritdoc />
     public partial class CategoryModelCreation : Migration

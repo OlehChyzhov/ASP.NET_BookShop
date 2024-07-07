@@ -4,7 +4,7 @@
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace ASP.NET_BookShop.Migrations
+namespace BookShop.DataAcesss.Migrations
 {
     /// <inheritdoc />
     public partial class CategoryPageCreated_DefaultCategoriesAdded : Migration

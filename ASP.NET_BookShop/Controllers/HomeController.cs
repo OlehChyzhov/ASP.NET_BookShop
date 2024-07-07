@@ -1,4 +1,4 @@
-using ASP.NET_BookShop.Models;
+using BookShop.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
