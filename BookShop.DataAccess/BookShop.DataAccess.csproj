@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BookShop.Models\BookShop.Models.csproj" />
-    <ProjectReference Include="..\BookShop.Utulity\BookShop.Utulity.csproj" />
+    <ProjectReference Include="..\BookShop.Utulity\BookShop.Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>

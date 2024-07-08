@@ -7,14 +7,14 @@ namespace ASP.NET_BookShop.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ICategoryRepository categoryRepository;
-        public CategoryController(ICategoryRepository catetoryRepo)
+        private readonly IUnitOfWork unitOfWork;
+        public CategoryController(IUnitOfWork unit)
         {
-            categoryRepository = catetoryRepo;
+            unitOfWork = unit;
         }
         public IActionResult Index()
         {
-            List<Category> all_categories = categoryRepository.GetAll().ToList();
+            List<Category> all_categories = unitOfWork.Category.GetAll().ToList();
             return View(all_categories);
         }
         public IActionResult CreateCategory()
@@ -27,8 +27,8 @@ namespace ASP.NET_BookShop.Controllers
             if (category.Name == category.DisplayOrder.ToString()) ModelState.AddModelError("name", "The Display Order cannot exactly match the Name");
             if (ModelState.IsValid == false || category.Name == null) return View();
 
-            categoryRepository.Add(category);
-            categoryRepository.SaveChanges();
+            unitOfWork.Category.Add(category);
+            unitOfWork.SaveChanges();
             TempData["success"] = "Category created successfully";
             return RedirectToAction("Index", "Category");
         }
@@ -37,7 +37,7 @@ namespace ASP.NET_BookShop.Controllers
         {
             if (id == null || id == 0) return NotFound();
      
-            Category? category_from_database = categoryRepository.GetFirstOrDefault(category => category.Id == id);
+            Category? category_from_database = unitOfWork.Category.GetFirstOrDefault(category => category.Id == id);
 
             if (category_from_database == null) return NotFound();
             return View(category_from_database);
@@ -48,18 +48,18 @@ namespace ASP.NET_BookShop.Controllers
             if (category.Name == category.DisplayOrder.ToString()) ModelState.AddModelError("name", "The Display Order cannot exactly match the Name");
             if (ModelState.IsValid == false || category.Name == null) return View();
 
-            categoryRepository.Update(category);
-            categoryRepository.SaveChanges();
+            unitOfWork.Category.Update(category);
+            unitOfWork.SaveChanges();
             TempData["success"] = "Category updated successfully";
             return RedirectToAction("Index", "Category");
         }
         public IActionResult Delete(int? id)
         {
-            Category? category_from_database = categoryRepository.GetFirstOrDefault(category => category.Id == id);
+            Category? category_from_database = unitOfWork.Category.GetFirstOrDefault(category => category.Id == id);
             if (category_from_database == null) return NotFound();
-            
-            categoryRepository.Remove(category_from_database);
-            categoryRepository.SaveChanges();
+
+            unitOfWork.Category.Remove(category_from_database);
+            unitOfWork.SaveChanges();
             TempData["success"] = "Category deleted successfully";
             return RedirectToAction("Index", "Category");
         }
