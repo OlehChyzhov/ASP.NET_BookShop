@@ -1,19 +1,20 @@
-﻿using BookShop.DataAcesss.Data;
+﻿using BookShop.DataAccess.Data;
 using BookShop.Models;
 using Microsoft.AspNetCore.Mvc;
+using BookShop.DataAccess.Repository.IRepository;
 
 namespace ASP.NET_BookShop.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ShopContext shop_context;
-        public CategoryController(ShopContext context)
+        private readonly ICategoryRepository categoryRepository;
+        public CategoryController(ICategoryRepository catetoryRepo)
         {
-            shop_context = context;
+            categoryRepository = catetoryRepo;
         }
         public IActionResult Index()
         {
-            List<Category> all_categories = shop_context.Categories.ToList();
+            List<Category> all_categories = categoryRepository.GetAll().ToList();
             return View(all_categories);
         }
         public IActionResult CreateCategory()
@@ -26,24 +27,19 @@ namespace ASP.NET_BookShop.Controllers
             if (category.Name == category.DisplayOrder.ToString()) ModelState.AddModelError("name", "The Display Order cannot exactly match the Name");
             if (ModelState.IsValid == false || category.Name == null) return View();
 
-            shop_context.Categories.Add(category);
-            shop_context.SaveChanges();
+            categoryRepository.Add(category);
+            categoryRepository.SaveChanges();
             TempData["success"] = "Category created successfully";
             return RedirectToAction("Index", "Category");
         }
 
         public IActionResult Edit(int? id)
         {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-            Category category_from_database = shop_context.Categories.Find(id)!;
-            if (category_from_database == null)
-            {
-                return NotFound();
-            }
-            
+            if (id == null || id == 0) return NotFound();
+     
+            Category? category_from_database = categoryRepository.GetFirstOrDefault(category => category.Id == id);
+
+            if (category_from_database == null) return NotFound();
             return View(category_from_database);
         }
         [HttpPost]
@@ -52,18 +48,18 @@ namespace ASP.NET_BookShop.Controllers
             if (category.Name == category.DisplayOrder.ToString()) ModelState.AddModelError("name", "The Display Order cannot exactly match the Name");
             if (ModelState.IsValid == false || category.Name == null) return View();
 
-            shop_context.Update(category);
-            shop_context.SaveChanges();
+            categoryRepository.Update(category);
+            categoryRepository.SaveChanges();
             TempData["success"] = "Category updated successfully";
             return RedirectToAction("Index", "Category");
         }
         public IActionResult Delete(int? id)
         {
-            Category? category_from_database = shop_context.Categories.Find(id);
+            Category? category_from_database = categoryRepository.GetFirstOrDefault(category => category.Id == id);
             if (category_from_database == null) return NotFound();
             
-            shop_context.Remove(category_from_database);
-            shop_context.SaveChanges();
+            categoryRepository.Remove(category_from_database);
+            categoryRepository.SaveChanges();
             TempData["success"] = "Category deleted successfully";
             return RedirectToAction("Index", "Category");
         }

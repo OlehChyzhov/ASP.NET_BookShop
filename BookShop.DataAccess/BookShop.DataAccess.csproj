@@ -20,4 +20,9 @@
     <ProjectReference Include="..\BookShop.Utulity\BookShop.Utulity.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Database\" />
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

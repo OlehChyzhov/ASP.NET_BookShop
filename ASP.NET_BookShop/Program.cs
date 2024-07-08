@@ -1,11 +1,15 @@
-using BookShop.DataAcesss.Data;
+using BookShop.DataAccess.Data;
+using BookShop.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using BookShop.DataAccess.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ShopContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteConnection")));
+
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 var app = builder.Build();
 
