@@ -3,8 +3,9 @@ using BookShop.Models;
 using Microsoft.AspNetCore.Mvc;
 using BookShop.DataAccess.Repository.IRepository;
 
-namespace ASP.NET_BookShop.Controllers
+namespace ASP.NET_BookShop.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
@@ -36,7 +37,7 @@ namespace ASP.NET_BookShop.Controllers
         public IActionResult Edit(int? id)
         {
             if (id == null || id == 0) return NotFound();
-     
+
             Category? category_from_database = unitOfWork.Category.GetFirstOrDefault(category => category.Id == id);
 
             if (category_from_database == null) return NotFound();
