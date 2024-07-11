@@ -20,7 +20,7 @@ namespace BookShop.DataAccess.Repository
 
         public void Update(Category category)
         {
-            shop_context.Update(category);
+            shop_context.Categories.Update(category);
         }
     }
 }

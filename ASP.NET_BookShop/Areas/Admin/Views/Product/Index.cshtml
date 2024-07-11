@@ -1,0 +1,49 @@
+﻿@model List<Product>
+
+@{
+    List<Product> ordered_products = Model.OrderBy(product => product.Title).ToList();
+}
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient m-lg-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Product List</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row pb-3">
+            <div class="text-end">
+                <a asp-controller="Product" asp-action="CreateProduct" class="btn btn-dark"><i class="bi bi-plus-circle"></i> Create New Product</a>
+            </div>
+        </div>
+
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th class="text-center">Title</th>
+                <th class="text-center">ISBN</th>
+                <th class="text-center">Price</th>
+                <th class="text-center">Author</th>
+                <th class="text-center">Category</th>
+                <th class="text-center">Edit</th>
+            </tr>
+            @foreach (Product product in ordered_products)
+            {
+                <tr class="text-center">
+                    <td>@product.Title</td>
+                    <td>@product.ISBN</td>
+                    <td>@product.Price$</td>
+                    <td>@product.Author</td>
+                    <td>Category</td>
+                    <td>
+                        <div class="w-75 btn-group" role="group">
+                            <a asp-controller="Product" asp-action="Edit" asp-route-Id="@product.Id" class="btn btn-outline-dark text-center"><i class="bi bi-pencil"></i> Edit</a>
+                            <a asp-controller="Product" asp-action="Delete" asp-route-Id="@product.Id" class="btn btn-outline-danger"><i class="bi bi-trash3-fill"></i> Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
