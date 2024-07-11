@@ -41,5 +41,12 @@ namespace BookShop.Models
         [Display(Name = "Price for 100+")]
         [Column("price_100")]
         public double Price100 { get; set; }
+
+        [Column("category_id")]
+        public int CategoryId { get; set; }
+        [ForeignKey("CategoryId")]
+        public Category? Category { get; set; }
+        [Column("product_image_url")]
+        public string? ImageUrl { get; set; }
     }
 }
