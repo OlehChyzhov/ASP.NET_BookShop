@@ -1,6 +1,8 @@
 ﻿using BookShop.DataAccess.Repository.IRepository;
 using BookShop.Models;
+using BookShop.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ASP.NET_BookShop.Areas.Admin.Controllers
 {
@@ -17,34 +19,30 @@ namespace ASP.NET_BookShop.Areas.Admin.Controllers
             List<Product> all_products = unitOfWork.Product.GetAll().ToList();
             return View(all_products);
         }
-        public IActionResult CreateProduct()
+        public IActionResult UpdateOrInsert(int? id)
         {
-            return View();
+            IEnumerable<SelectListItem> CategoryList = unitOfWork.Category.GetAll().Select(category => new SelectListItem
+            {
+                Text = category.Name,
+                Value = category.Id.ToString()
+            });
+            ProductVM productVM = new() { CategoryList = CategoryList, Product = new Product() };
+            
+            if (id == null) return View(productVM);
+            else
+            {
+                productVM.Product = unitOfWork.Product.GetFirstOrDefault(prod => prod.Id == id)!;
+                return View(productVM);
+            }
         }
         [HttpPost]
-        public IActionResult CreateProduct(Product product)
+        public IActionResult UpdateOrInsert(ProductVM view_model, IFormFile? File)
         {
-            if (product.Title == product.Author) ModelState.AddModelError("Title", "Title cannot exactly match the author");
+            if (view_model.Product.Title == view_model.Product.Author) ModelState.AddModelError("Title", "Title cannot exactly match the author");
             if (ModelState.IsValid == false) return View();
-            unitOfWork.Product.Add(product);
+            unitOfWork.Product.Add(view_model.Product);
             unitOfWork.SaveChanges();
             TempData["success"] = "Product created successfully";
-            return RedirectToAction("Index", "Product");
-        }
-        public IActionResult Edit(int? id)
-        {
-            if (id == null || id == 0) return NotFound();
-            Product? product_form_database = unitOfWork.Product.GetFirstOrDefault(prod => prod.Id == id);
-            return View(product_form_database);
-        }
-        [HttpPost]
-        public IActionResult Edit(Product product)
-        {
-            if (product.Title == product.Author) ModelState.AddModelError("Title", "Title cannot exactly match the author");
-            if (ModelState.IsValid == false) return View();
-            unitOfWork.Product.Update(product);
-            unitOfWork.SaveChanges();
-            TempData["success"] = "Product updated successfully";
             return RedirectToAction("Index", "Product");
         }
         public IActionResult Delete(int? id)
