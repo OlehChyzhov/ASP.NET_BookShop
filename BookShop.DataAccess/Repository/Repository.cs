@@ -24,16 +24,30 @@ namespace BookShop.DataAccess.Repository
             Table.Add(entity);
         }
 
-        public IEnumerable<T> GetAll()
+        public IEnumerable<T> GetAll(string? includeProperties = null)
         {
             IQueryable<T> query = Table;
+            if (string.IsNullOrEmpty(includeProperties) == false)
+            {
+                foreach (var includeProp in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
             return query.ToList();
         }
 
-        public T? GetFirstOrDefault(Expression<Func<T, bool>> filter)
+        public T? GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties = null)
         {
             IQueryable<T> query = Table;
             query = query.Where(filter);
+            if (string.IsNullOrEmpty(includeProperties) == false)
+            {
+                foreach (var includeProp in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
             return query.FirstOrDefault();
         }
 
