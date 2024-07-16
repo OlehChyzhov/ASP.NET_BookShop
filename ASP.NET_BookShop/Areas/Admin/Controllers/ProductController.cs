@@ -92,6 +92,7 @@ namespace ASP.NET_BookShop.Areas.Admin.Controllers
             return Json(new { data = all_products });
         }
 
+        [HttpDelete]
         public IActionResult Delete(int? id)
         {
             var product_from_database = unitOfWork.Product.GetFirstOrDefault(prod => prod.Id == id);
