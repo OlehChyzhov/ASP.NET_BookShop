@@ -22,6 +22,11 @@ namespace ASP.NET_BookShop.Areas.Customer.Controllers
             List<Product> products = unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
             return View(products);
         }
+        public IActionResult Details(int id)
+        {
+            Product product = unitOfWork.Product.GetFirstOrDefault(prod => prod.Id == id, "Category")!;
+            return View(product);
+        }
 
         public IActionResult Privacy()
         {
