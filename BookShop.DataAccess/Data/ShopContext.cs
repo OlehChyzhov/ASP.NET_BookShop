@@ -1,9 +1,10 @@
 ﻿using BookShop.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookShop.DataAccess.Data
 {
-    public class ShopContext : DbContext
+    public class ShopContext : IdentityDbContext
     {
         public ShopContext(DbContextOptions<ShopContext> options): base(options) {}
 
@@ -12,6 +13,8 @@ namespace BookShop.DataAccess.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Category>().HasData(DefaultDataProvider.GetDefaultCategories());
             modelBuilder.Entity<Product>().HasData(DefaultDataProvider.GetDefaultProducts());
         }
