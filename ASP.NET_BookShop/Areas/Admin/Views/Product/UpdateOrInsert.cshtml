@@ -12,6 +12,7 @@
         <form method="post" class="row" enctype="multipart/form-data">
             <input asp-for="Product.Id" hidden />
             <input asp-for="Product.ImageUrl" hidden />
+
             <div class="row">
                 <div class="col-10">
                     <div class="border p-3">
@@ -75,7 +76,7 @@
                             <select class="form-select border-0 shadow" asp-items="Model.CategoryList" asp-for="Product.CategoryId" type="text">
                                 <option disabled selected>--Select Category--</option>
                             </select>
-                            <label asp-for="Product.CategoryId" class="ms-2"></label>
+                            <label asp-for="Product.CategoryId" class="ms-2">Category</label>
                         </div>
 
 

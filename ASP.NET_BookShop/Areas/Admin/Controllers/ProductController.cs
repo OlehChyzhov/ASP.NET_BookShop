@@ -16,6 +16,15 @@ namespace ASP.NET_BookShop.Areas.Admin.Controllers
             unitOfWork = unit;
             webHostEnvironment = environment;
         }
+        public IEnumerable<SelectListItem> GetListItemOfCategories()
+        {
+            IEnumerable<SelectListItem> CategoryList = unitOfWork.Category.GetAll().Select(category => new SelectListItem
+            {
+                Text = category.Name,
+                Value = category.Id.ToString()
+            });
+            return CategoryList;
+        }
         public IActionResult Index()
         {
             List<Product> all_products = unitOfWork.Product.GetAll("Category").ToList();
@@ -23,12 +32,7 @@ namespace ASP.NET_BookShop.Areas.Admin.Controllers
         }
         public IActionResult UpdateOrInsert(int? id)
         {
-            IEnumerable<SelectListItem> CategoryList = unitOfWork.Category.GetAll().Select(category => new SelectListItem
-            {
-                Text = category.Name,
-                Value = category.Id.ToString()
-            });
-            ProductVM productVM = new() { CategoryList = CategoryList, Product = new Product() };
+            ProductVM productVM = new() { CategoryList = GetListItemOfCategories(), Product = new Product() };
             
             if (id == null) return View(productVM);
             else
@@ -38,11 +42,10 @@ namespace ASP.NET_BookShop.Areas.Admin.Controllers
             }
         }
         [HttpPost]
-        public IActionResult UpdateOrInsert(ProductVM view_model, IFormFile? File)
+        public IActionResult UpdateOrInsert(ProductVM model, IFormFile? File)
         {
             // Validation
-            if (view_model.Product.Title == view_model.Product.Author) ModelState.AddModelError("Title", "Title cannot exactly match the author");
-            if (ModelState.IsValid == false) return View();
+            if (model.Product.Title == model.Product.Author) ModelState.AddModelError("Title", "Title cannot exactly match the author");
 
             // File image saving
             string wwwRootPath = webHostEnvironment.WebRootPath;
@@ -51,10 +54,10 @@ namespace ASP.NET_BookShop.Areas.Admin.Controllers
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(File.FileName);
                 string productPath = Path.Combine(wwwRootPath, @"images\products");
 
-                if (string.IsNullOrEmpty(view_model.Product.ImageUrl) == false)
+                if (string.IsNullOrEmpty(model.Product.ImageUrl) == false)
                 {
                     // Delete old image
-                    var old_image_path = Path.Combine(wwwRootPath, view_model.Product.ImageUrl.TrimStart('\\'));
+                    var old_image_path = Path.Combine(wwwRootPath, model.Product.ImageUrl.TrimStart('\\'));
                     if (System.IO.File.Exists(old_image_path))
                     {
                         System.IO.File.Delete(old_image_path);
@@ -65,22 +68,33 @@ namespace ASP.NET_BookShop.Areas.Admin.Controllers
                 {
                     File.CopyTo(fileStream);
                 }
-                view_model.Product.ImageUrl = @"\images\products\" + fileName;
+                model.Product.ImageUrl = @"\images\products\" + fileName;
             }
-
-            // Product creating
-            if (view_model.Product.Id == 0)
+            bool choice = (ModelState.IsValid && model.Product.CategoryId != 0) ? true : false;
+            if (choice == true)
             {
-                unitOfWork.Product.Add(view_model.Product);
-                TempData["success"] = "Product created successfully";
+                // Product creating
+                if (model.Product.Id == 0)
+                {
+                    unitOfWork.Product.Add(model.Product);
+                    TempData["success"] = "Product created successfully";
+                }
+                // Product updating
+                else
+                {
+                    unitOfWork.Product.Update(model.Product);
+                    TempData["success"] = "Product updated successfully";
+                }
+                unitOfWork.SaveChanges();
             }
-            // Product updating
             else
             {
-                unitOfWork.Product.Update(view_model.Product);
-                TempData["success"] = "Product updated successfully";
+                TempData["error"] = "Not all fields are valid";
+                ProductVM product_view_model = model;
+                product_view_model.CategoryList = GetListItemOfCategories();
+                return View(product_view_model);
             }
-            unitOfWork.SaveChanges();
+            
             return RedirectToAction("Index", "Product");
         }
 
@@ -98,10 +112,13 @@ namespace ASP.NET_BookShop.Areas.Admin.Controllers
             var product_from_database = unitOfWork.Product.GetFirstOrDefault(prod => prod.Id == id);
             if (product_from_database == null) return Json(new { success = false, message = "No such product exists" });
 
-            var oldImagePath = product_from_database.ImageUrl;
+            var old_image_path = product_from_database.ImageUrl;
 
             // Delete old image
-            var old_image_path = Path.Combine(webHostEnvironment.WebRootPath, product_from_database.ImageUrl.TrimStart('\\'));
+            if (product_from_database.ImageUrl != null)
+            {
+                old_image_path = Path.Combine(webHostEnvironment.WebRootPath, product_from_database.ImageUrl.TrimStart('\\'));
+            }
             if (System.IO.File.Exists(old_image_path))
             {
                 System.IO.File.Delete(old_image_path);
