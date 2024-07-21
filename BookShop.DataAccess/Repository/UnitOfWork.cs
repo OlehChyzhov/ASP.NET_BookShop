@@ -15,6 +15,8 @@ namespace BookShop.DataAccess.Repository
         public IProductRepository Product { get; private set; }
 
         public ICompanyRepository Company { get; private set; }
+        public IShoppingCartRepository ShoppingCart { get; private set; }
+        public IUserExtentionRepository ExtentionUser { get; private set; }
 
         public UnitOfWork(ShopContext context)
         {
@@ -22,6 +24,8 @@ namespace BookShop.DataAccess.Repository
             Category = new CategoryRepository(shop_context);
             Product = new ProductRepository(shop_context);
             Company = new CompanyRepository(shop_context);
+            ShoppingCart = new ShoppingCartRepository(shop_context);
+            ExtentionUser = new UserExtentionRepository(shop_context);
         }
         public void SaveChanges()
         {

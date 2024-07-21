@@ -30,7 +30,7 @@ namespace ASP.NET_BookShop.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            List<Product> all_products = unitOfWork.Product.GetAll("Category").ToList();
+            List<Product> all_products = unitOfWork.Product.GetAll(includeProperties:"Category").ToList();
             return View(all_products);
         }
         public IActionResult UpdateOrInsert(int? id)
@@ -105,7 +105,7 @@ namespace ASP.NET_BookShop.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            List<Product> all_products = unitOfWork.Product.GetAll("Category").ToList();
+            List<Product> all_products = unitOfWork.Product.GetAll(includeProperties:"Category").ToList();
             return Json(new { data = all_products });
         }
 

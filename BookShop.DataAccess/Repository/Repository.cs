@@ -24,9 +24,11 @@ namespace BookShop.DataAccess.Repository
             Table.Add(entity);
         }
 
-        public IEnumerable<T> GetAll(string? includeProperties = null)
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter, string? includeProperties = null)
         {
             IQueryable<T> query = Table;
+            if (filter != null) query.Where(filter);
+            
             if (string.IsNullOrEmpty(includeProperties) == false)
             {
                 foreach (var includeProp in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries))
@@ -37,9 +39,13 @@ namespace BookShop.DataAccess.Repository
             return query.ToList();
         }
 
-        public T? GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties = null)
+        public T? GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false)
         {
-            IQueryable<T> query = Table;
+            IQueryable<T> query;
+            
+            if (tracked == false) query = Table.AsNoTracking();
+            else query = Table;
+            
             query = query.Where(filter);
             if (string.IsNullOrEmpty(includeProperties) == false)
             {
