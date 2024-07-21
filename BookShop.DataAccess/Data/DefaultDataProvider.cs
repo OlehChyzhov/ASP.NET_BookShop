@@ -22,6 +22,41 @@ namespace BookShop.DataAccess.Data
             return default_categories;
         }
 
+        public static Company[] GetDefaultCompanies()
+        {
+            Company[] default_companies =
+            {
+                new Company {
+                    Id = 1,
+                    Name = "Tech Solution",
+                    StreetAddress = "123 Tech St",
+                    City = "Tech City",
+                    PostalCode = "12121",
+                    State="IL",
+                    PhoneNumber="666999000"
+                },
+                new Company {
+                    Id = 2,
+                    Name = "Vivid Books",
+                    StreetAddress = "999 Vid St",
+                    City = "Vid City",
+                    PostalCode = "34343",
+                    State="IL",
+                    PhoneNumber="777888555"
+                },
+                new Company {
+                    Id = 3,
+                    Name = "Readers Club",
+                    StreetAddress = "999 Main St",
+                    City = "Lala land",
+                    PostalCode = "99999",
+                    State="UG",
+                    PhoneNumber="222999333"
+                },
+            };
+            return default_companies;
+        }
+
         public static Product[] GetDefaultProducts()
         {
             Product[] default_products =

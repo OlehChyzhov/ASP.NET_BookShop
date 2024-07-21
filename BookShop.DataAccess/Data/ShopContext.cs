@@ -10,7 +10,8 @@ namespace BookShop.DataAccess.Data
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<UserExtention> Users{ get; set; }
+        public DbSet<UserExtention> Users { get; set; }
+        public DbSet<Company> Companies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -18,6 +19,7 @@ namespace BookShop.DataAccess.Data
 
             modelBuilder.Entity<Category>().HasData(DefaultDataProvider.GetDefaultCategories());
             modelBuilder.Entity<Product>().HasData(DefaultDataProvider.GetDefaultProducts());
+            modelBuilder.Entity<Company>().HasData(DefaultDataProvider.GetDefaultCompanies());
         }
     }
 }
