@@ -25,5 +25,8 @@ namespace BookShop.Models
         [ValidateNever]
         [ForeignKey("UserId")]
         public UserExtention User { get; set; }
+
+        [NotMapped]
+        public double Price { get; set; }
     }
 }
