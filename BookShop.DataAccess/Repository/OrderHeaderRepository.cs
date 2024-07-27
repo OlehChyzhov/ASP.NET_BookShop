@@ -22,5 +22,32 @@ namespace BookShop.DataAccess.Repository
         {
             shop_context.OrderHeaders.Update(order_header);
         }
+
+        public void UpdateStatus(int id, string orderStatus, string? paymentStatus = null)
+        {
+            var orderFromDb = shop_context.OrderHeaders.FirstOrDefault(header => header.Id == id);
+            if (orderFromDb != null)
+            {
+                orderFromDb.OrderStatus = orderStatus;
+                if (string.IsNullOrEmpty(paymentStatus) == false)
+                {
+                    orderFromDb.PaymentStatus = paymentStatus;
+                }
+            }
+        }
+
+        public void UpdateStripePaymentId(int id, string sessionId, string paymentIntendId)
+        {
+            var orderFromDb = shop_context.OrderHeaders.FirstOrDefault(header => header.Id == id);
+            if (string.IsNullOrEmpty(sessionId) == false)
+            {
+                orderFromDb.SessionId = sessionId;
+            }
+            if (string.IsNullOrEmpty(paymentIntendId) == false)
+            {
+                orderFromDb.PaymentIntentId = paymentIntendId;
+                orderFromDb.PaymentDate = DateTime.Now;
+            }
+        }
     }
 }

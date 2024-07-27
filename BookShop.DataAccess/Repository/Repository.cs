@@ -27,7 +27,7 @@ namespace BookShop.DataAccess.Repository
         public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter, string? includeProperties = null)
         {
             IQueryable<T> query = Table;
-            if (filter != null) query.Where(filter);
+            if (filter != null) query = query.Where(filter);
             
             if (string.IsNullOrEmpty(includeProperties) == false)
             {
