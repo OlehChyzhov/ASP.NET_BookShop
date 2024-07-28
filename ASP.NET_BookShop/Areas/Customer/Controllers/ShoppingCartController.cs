@@ -91,8 +91,8 @@ namespace ASP.NET_BookShop.Areas.Customer.Controllers
             else
             {
                 // it is regular customer account
-                ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
-                ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
+                ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusApproved;
+                ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusApproved;
             }
             _unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
             _unitOfWork.SaveChanges();
@@ -124,6 +124,7 @@ namespace ASP.NET_BookShop.Areas.Customer.Controllers
             OrderHeader orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == id, includeProperties: "UserExtention");
             List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.GetAll(cart => cart.UserId == orderHeader.UserId).ToList();
             _unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
+            HttpContext.Session.Clear();
 
             _unitOfWork.SaveChanges();
             return View();

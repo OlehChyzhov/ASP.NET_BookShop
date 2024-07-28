@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using BookShop.Utility;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Build.Framework;
+using BookShop.DataAccess.DbInitializer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,7 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 
 var app = builder.Build();
 
@@ -58,6 +60,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
 
+SeedDatabase();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
@@ -65,3 +69,12 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+
+void SeedDatabase()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbinitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        dbinitializer.Initialize();
+    }
+}
