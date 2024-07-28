@@ -1,5 +1,6 @@
 using BookShop.DataAccess.Repository.IRepository;
 using BookShop.Models;
+using BookShop.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -50,13 +51,16 @@ namespace ASP.NET_BookShop.Areas.Customer.Controllers
                 // shopping cart exists
                 cart_from_database.Count += shopping_cart.Count;
                 unitOfWork.ShoppingCart.Update(cart_from_database);
+                unitOfWork.SaveChanges();
             }
             else
             {
                 // add cart record
                 unitOfWork.ShoppingCart.Add(shopping_cart);
+                unitOfWork.SaveChanges();
+                HttpContext.Session.SetInt32(SD.SessionCart, unitOfWork.ShoppingCart.GetAll(u => u.UserId == user_id).Count());
             }
-            unitOfWork.SaveChanges();
+
             TempData["success"] = "Added to the shopping cart";
 
             return RedirectToAction("Index", "Home");

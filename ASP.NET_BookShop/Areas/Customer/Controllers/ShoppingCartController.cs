@@ -141,9 +141,10 @@ namespace ASP.NET_BookShop.Areas.Customer.Controllers
         }
         public IActionResult Minus(int cartId)
         {
-            var cart_from_database = _unitOfWork.ShoppingCart.GetFirstOrDefault(cart => cart.Id == cartId);
+            var cart_from_database = _unitOfWork.ShoppingCart.GetFirstOrDefault(cart => cart.Id == cartId, tracked:true);
             if (cart_from_database.Count <= 1)
             {
+                HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(u => u.UserId == cart_from_database.UserId).Count() - 1);
                 _unitOfWork.ShoppingCart.Remove(cart_from_database);
                 TempData["success"] = "Books Removed";
             }
@@ -159,11 +160,12 @@ namespace ASP.NET_BookShop.Areas.Customer.Controllers
         }
         public IActionResult Remove(int cartId)
         {
-            var cart_from_database = _unitOfWork.ShoppingCart.GetFirstOrDefault(cart => cart.Id == cartId);
+            var cart_from_database = _unitOfWork.ShoppingCart.GetFirstOrDefault(cart => cart.Id == cartId, tracked:true);
+            HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(u => u.UserId == cart_from_database.UserId).Count() - 1);
             _unitOfWork.ShoppingCart.Remove(cart_from_database);
             _unitOfWork.SaveChanges();
-            TempData["success"] = "All Books Removed";
 
+            TempData["success"] = "All Books Removed";
             return RedirectToAction("Index", "ShoppingCart");
         }
 
