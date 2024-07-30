@@ -51,8 +51,7 @@ namespace BookShop.Models
         [ValidateNever]
         public Category? Category { get; set; }
 
-        [Column("product_image_url")]
         [ValidateNever]
-        public string? ImageUrl { get; set; }
+        public List<ProductImage> ProductImages { get; set; }
     }
 }

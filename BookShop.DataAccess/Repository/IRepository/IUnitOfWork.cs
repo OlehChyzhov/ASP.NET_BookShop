@@ -10,9 +10,10 @@ namespace BookShop.DataAccess.Repository.IRepository
     {
         ICategoryRepository Category { get; }
         IProductRepository Product { get; }
+        IProductImageRepository ProductImage { get; }
         ICompanyRepository Company { get; }
         IShoppingCartRepository ShoppingCart { get; }
-        IUserExtentionRepository ExtentionUser { get; }
+        IUserExtentionRepository UserExtentions { get; }
         IOrderDetailRepository OrderDetail { get; }
         IOrderHeaderRepository OrderHeader { get; }
         void SaveChanges();

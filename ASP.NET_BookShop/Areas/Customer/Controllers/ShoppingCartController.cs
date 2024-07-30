@@ -29,8 +29,12 @@ namespace ASP.NET_BookShop.Areas.Customer.Controllers
                 ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(cart => cart.UserId == user_id, includeProperties: "Product"),
                 OrderHeader = new OrderHeader()
             };
+
+            IEnumerable<ProductImage> productImages = _unitOfWork.ProductImage.GetAll();
+
             foreach (var cart in ShoppingCartVM.ShoppingCartList)
             {
+                cart.Product.ProductImages = productImages.Where(image => image.ProductId == cart.Product.Id).ToList();
                 cart.Price = GetPriceBasedOnQuantity(cart);
                 ShoppingCartVM.OrderHeader.OrderTotal += cart.Price * cart.Count;
             }
@@ -46,7 +50,7 @@ namespace ASP.NET_BookShop.Areas.Customer.Controllers
                 ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(cart => cart.UserId == user_id, includeProperties: "Product"),
                 OrderHeader = new OrderHeader()
             };
-            ShoppingCartVM.OrderHeader.UserExtention = _unitOfWork.ExtentionUser.GetFirstOrDefault(u => u.Id == user_id);
+            ShoppingCartVM.OrderHeader.UserExtention = _unitOfWork.UserExtentions.GetFirstOrDefault(u => u.Id == user_id);
 
             ShoppingCartVM.OrderHeader.Name = ShoppingCartVM.OrderHeader.UserExtention.Name;
             ShoppingCartVM.OrderHeader.PhoneNumber = ShoppingCartVM.OrderHeader.UserExtention.PhoneNumber;
@@ -74,7 +78,7 @@ namespace ASP.NET_BookShop.Areas.Customer.Controllers
             ShoppingCartVM.OrderHeader.OrderDate = System.DateTime.Now;
             ShoppingCartVM.OrderHeader.UserId = user_id;
 
-			UserExtention user = _unitOfWork.ExtentionUser.GetFirstOrDefault(u => u.Id == user_id)!;
+			UserExtention user = _unitOfWork.UserExtentions.GetFirstOrDefault(u => u.Id == user_id)!;
 
 			foreach (var cart in ShoppingCartVM.ShoppingCartList)
 			{
